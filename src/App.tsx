@@ -52,6 +52,30 @@ export default function App() {
     { id: 'founder', name: 'Founder & Vision', icon: Milestone },
   ];
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.2
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: {
+        type: "spring" as const,
+        stiffness: 300,
+        damping: 30
+      }
+    }
+  };
+
   return (
     <div className="flex h-screen bg-[#030409] font-sans overflow-hidden text-slate-200">
       {/* Mobile Sidebar Overlay */}
@@ -155,7 +179,7 @@ export default function App() {
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col min-w-0 relative h-full">        {/* Header */}
-        <header className="h-16 flex items-center justify-between px-6 border-b border-white/5 backdrop-blur-xl bg-[#030409]/80 fixed top-0 right-0 left-0 lg:left-64 z-30 print:hidden">
+        <header className="h-16 flex items-center justify-between px-6 border-b border-white/5 apple-blur fixed top-0 right-0 left-0 lg:left-64 z-30 print:hidden">
           <div className="flex items-center gap-4">
             <button 
               onClick={toggleSidebar}
@@ -172,7 +196,7 @@ export default function App() {
             </div>
             <button 
               onClick={() => window.print()}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-xs font-bold text-slate-300 hover:bg-white/10 hover:text-white transition-all"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl glossy-button text-xs font-bold text-slate-300 transition-all border border-white/5"
               title="Generate PDF Report"
             >
               <BarChart3 className="w-4 h-4" />
@@ -208,6 +232,19 @@ export default function App() {
 }
 
 function OverviewView() {
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1 }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 }
+  };
+
   const chartData = PILLARS.map(p => ({
     name: p.name.split(' ')[0],
     count: p.ventures.length,
@@ -221,11 +258,16 @@ function OverviewView() {
   ];
 
   return (
-    <div className="space-y-8">
-      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+    <motion.div 
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+      className="space-y-8"
+    >
+      <motion.div variants={itemVariants} className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div className="space-y-2">
-          <h1 className="text-4xl font-display font-bold text-white tracking-tight">Ecosystem Intelligence</h1>
-          <p className="text-slate-400 max-w-2xl">{COMPANY_INFO.mission}</p>
+          <h1 className="text-4xl lg:text-5xl font-display font-bold text-white tracking-tight gradient-text">Ecosystem Intelligence</h1>
+          <p className="text-slate-400 max-w-2xl leading-relaxed">{COMPANY_INFO.mission}</p>
         </div>
         <div className="flex gap-3">
           <div className="glass-card px-4 py-3 flex flex-col gap-1 min-w-[120px]">
@@ -237,15 +279,15 @@ function OverviewView() {
              <span className="text-xl font-display font-bold text-white tracking-tight">{COMPANY_INFO.origin}</span>
           </div>
         </div>
-      </div>
+      </motion.div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <StatCard title="Total AI Ventures" value={COMPANY_INFO.venturesCount} icon={Rocket} color="blue" />
         <StatCard title="Core Ecosystem Pillars" value={COMPANY_INFO.pillarsCount} icon={Target} color="purple" />
         <StatCard title="Tech Hubs (Origin)" value="NE India" icon={Globe} color="green" />
-      </div>
+      </motion.div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <motion.div variants={itemVariants} className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="glass-card p-6 space-y-6">
           <h3 className="font-display font-bold text-lg text-white">Venture Distribution</h3>
           <div className="h-[300px] w-full">
@@ -304,7 +346,7 @@ function OverviewView() {
             </div>
           </div>
         </div>
-      </div>
+      </motion.div>
 
       <div className="space-y-6">
         <div className="flex items-center justify-between">
@@ -336,7 +378,7 @@ function OverviewView() {
           ))}
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
@@ -448,6 +490,30 @@ function PillarsView({ selectedId, onSelect }: { selectedId: string | null, onSe
 function VenturesView() {
   const [filter, setFilter] = useState('all');
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, scale: 0.95, y: 10 },
+    visible: { 
+      opacity: 1, 
+      scale: 1, 
+      y: 0,
+      transition: {
+        type: "spring" as const,
+        stiffness: 300,
+        damping: 30
+      }
+    }
+  };
+
   const filteredVentures = filter === 'all' 
     ? VENTURES 
     : VENTURES.filter(v => v.pillarId === filter);
@@ -456,13 +522,13 @@ function VenturesView() {
     <div className="space-y-8">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="space-y-2">
-          <h1 className="text-3xl font-display font-bold text-white tracking-tight">Active Venture Directory</h1>
-          <p className="text-slate-400 max-w-xl">Deep exploration of our nine specialized AI platforms built for impact.</p>
+          <h1 className="text-3xl font-display font-bold text-white tracking-tight gradient-text">Active Venture Directory</h1>
+          <p className="text-slate-400 max-w-xl leading-relaxed">Deep exploration of our nine specialized AI platforms built for impact.</p>
         </div>
-        <div className="flex items-center gap-2 bg-white/5 p-1 rounded-xl border border-white/10">
+        <div className="flex items-center gap-2 bg-white/5 p-1 rounded-2xl apple-blur border border-white/10 self-start">
           <button 
             onClick={() => setFilter('all')}
-            className={`px-4 py-2 rounded-lg text-xs font-medium transition-all ${filter === 'all' ? 'bg-white/10 text-white shadow-sm' : 'text-slate-400 hover:text-slate-200'}`}
+            className={`px-4 py-2 rounded-xl text-xs font-medium transition-all duration-300 ${filter === 'all' ? 'bg-white/10 text-white shadow-lg' : 'text-slate-400 hover:text-slate-200'}`}
           >
             All Ventures
           </button>
@@ -470,7 +536,7 @@ function VenturesView() {
             <button 
               key={p.id}
               onClick={() => setFilter(p.id)}
-              className={`px-4 py-2 rounded-lg text-xs font-medium transition-all ${filter === p.id ? 'bg-white/10 text-white shadow-sm' : 'text-slate-400 hover:text-slate-200'}`}
+              className={`px-4 py-2 rounded-xl text-xs font-medium transition-all duration-300 ${filter === p.id ? 'bg-white/10 text-white shadow-lg' : 'text-slate-400 hover:text-slate-200'}`}
             >
               {p.name.split(' ')[0]}
             </button>
@@ -478,16 +544,22 @@ function VenturesView() {
         </div>
       </div>
 
-      <div className="space-y-6">
+      <motion.div 
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+        key={filter}
+        className="space-y-6"
+      >
         {filteredVentures.map((v) => (
           <motion.div 
-            layout
+            variants={itemVariants}
             key={v.id} 
-            className="glass-card p-6 md:p-8 flex flex-col lg:flex-row gap-8 hover:bg-white/[0.07] transition-all duration-300"
+            className="glass-card glass-card-hover p-6 md:p-8 flex flex-col lg:flex-row gap-8 overflow-hidden relative"
           >
-            <div className="lg:w-1/3 space-y-4">
-              <div className="flex items-center gap-3">
-                 <div className="p-3 rounded-2xl bg-blue-500/10 text-blue-400 border border-blue-500/10">
+            <div className="lg:w-1/3 space-y-5 relative z-10">
+              <div className="flex items-center gap-4">
+                 <div className="p-4 rounded-2xl bg-blue-500/10 text-blue-400 border border-blue-500/20 shadow-lg shadow-blue-500/5">
                    {v.id === 'education-ai' && <GraduationCap className="w-6 h-6" />}
                    {v.id === 'knowledge-enabler' && <BrainCircuit className="w-6 h-6" />}
                    {v.id === 'ashasethu' && <HeartPulse className="w-6 h-6" />}
@@ -521,7 +593,7 @@ function VenturesView() {
                 href={v.liveUrl} 
                 target="_blank" 
                 rel="noreferrer"
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 text-white text-xs font-bold hover:bg-blue-500 transition-colors w-full sm:w-auto"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-2xl glossy-button text-white text-xs font-bold w-full sm:w-auto"
               >
                 Access Platform <ExternalLink className="w-3 h-3" />
               </a>
@@ -555,7 +627,7 @@ function VenturesView() {
             </div>
           </motion.div>
         ))}
-      </div>
+      </motion.div>
     </div>
   );
 }
@@ -694,15 +766,19 @@ function StatCard({ title, value, icon: Icon, color }: { title: string, value: s
   };
 
   return (
-    <div className="glass-card p-6 flex items-center justify-between group hover:border-slate-700 transition-all">
+    <motion.div 
+      whileHover={{ y: -5, scale: 1.02 }}
+      transition={{ type: "spring" as const, stiffness: 400, damping: 25 }}
+      className="glass-card glass-card-hover p-6 flex items-center justify-between group"
+    >
       <div className="space-y-1">
         <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">{title}</p>
         <p className="text-2xl font-display font-bold text-white tracking-tight">{value}</p>
       </div>
-      <div className={`p-4 rounded-2xl border ${colorMap[color]} shadow-lg transition-transform group-hover:scale-110`}>
+      <div className={`p-4 rounded-2xl border ${colorMap[color]} shadow-lg`}>
         <Icon className="w-6 h-6" />
       </div>
-    </div>
+    </motion.div>
   );
 }
 
